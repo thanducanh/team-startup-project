@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Quản Lý Thợ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .mobile-frame {
+            max-width: 400px; margin: 20px auto; background: white; min-height: 90vh;
+            border-radius: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.1); overflow: hidden; position: relative;
+        }
+        .header { background: linear-gradient(135deg, #0d6efd, #0dcaf0); color: white; padding: 20px; text-align: center; }
+        .worker-card { border-bottom: 1px solid #f0f0f0; padding: 15px; display: flex; align-items: center; transition: 0.2s; }
+        .worker-card:hover { background-color: #f8f9fa; }
+        .avatar { width: 50px; height: 50px; background: #e9ecef; border-radius: 50%; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #495057; font-size: 18px; }
+        .fab-btn {
+            position: absolute; bottom: 20px; right: 20px; width: 60px; height: 60px;
+            background: #0d6efd; color: white; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 10px rgba(13, 110, 253, 0.4);
+            cursor: pointer; border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-frame">
+        <div class="header">
+            <h4>👷 ĐỘI NGŨ KỸ THUẬT</h4>
+            <small>Danh sách nhân sự hiện trường</small>
+        </div>
+        
+        <div id="add-form" class="p-3 bg-light border-bottom" style="display: none;">
+            <h6 class="text-primary">✨ Thêm thợ mới</h6>
+            <input type="text" id="newName" class="form-control mb-2" placeholder="Họ và tên">
+            <input type="text" id="newPhone" class="form-control mb-2" placeholder="Số điện thoại">
+            <input type="password" id="newPass" class="form-control mb-2" placeholder="Mật khẩu đăng nhập">
+            <button onclick="addWorker()" class="btn btn-success w-100">Lưu nhân viên</button>
+            <button onclick="toggleForm()" class="btn btn-link w-100 text-secondary mt-1">Hủy</button>
+        </div>
+
+        <div id="worker-list" class="pb-5">
+            <div class="text-center p-4 text-muted">Đang tải dữ liệu...</div>
+        </div>
+
+        <button class="fab-btn" onclick="toggleForm()">+</button>
+    </div>
+
+    <script>
+        // Hàm lấy danh sách thợ
+        async function loadWorkers() {
+            try {
+                const res = await fetch('/api/workers');
+                const workers = await res.json();
+                
+                const listDiv = document.getElementById('worker-list');
+                listDiv.innerHTML = ''; 
+
+                workers.forEach(tho => {
+                    listDiv.innerHTML += `
+                        <div class="worker-card">
+                            <div class="avatar">${tho.name.charAt(0).toUpperCase()}</div>
+                            <div class="flex-grow-1">
+                                <h6 class="m-0 fw-bold">${tho.name}</h6>
+                                <small class="text-muted">📱 ${tho.phone}</small>
+                            </div>
+                            <span class="badge bg-${tho.role === 'admin' ? 'danger' : 'success'}">${tho.role}</span>
+                        </div>
+                    `;
+                });
+            } catch (err) { alert('Lỗi tải: ' + err.message); }
+        }
+
+        // Hàm Gửi dữ liệu thợ mới lên Server (QUAN TRỌNG)
+        async function addWorker() {
+            const name = document.getElementById('newName').value;
+            const phone = document.getElementById('newPhone').value;
+            const password = document.getElementById('newPass').value;
+
+            if(!name || !phone || !password) return alert("Vui lòng điền đủ thông tin!");
+
+            try {
+                // Gửi yêu cầu POST lên server
+                const res = await fetch('/api/workers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, phone, password })
+                });
+
+                if(res.ok) {
+                    alert("✅ Thêm thành công!");
+                    toggleForm(); // Đóng form
+                    loadWorkers(); // Tải lại danh sách
+                    // Xóa trắng ô nhập
+                    document.getElementById('newName').value = '';
+                    document.getElementById('newPhone').value = '';
+                } else {
+                    alert("❌ Lỗi khi thêm (Có thể trùng số điện thoại)");
+                }
+            } catch (err) { alert("Lỗi mạng: " + err.message); }
+        }
+
+        function toggleForm() {
+            const form = document.getElementById('add-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        loadWorkers(); // Chạy ngay khi mở app
+    </script>
+</body>
+</html>
