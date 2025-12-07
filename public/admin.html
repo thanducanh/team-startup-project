@@ -3,79 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang Quản Trị - Boss A</title>
+    <title>TRUNG TÂM ĐIỀU HÀNH | Cơ Giới VN</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-
     <nav class="navbar navbar-dark bg-primary mb-4">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">📊 TRUNG TÂM ĐIỀU HÀNH</a>
-            <button class="btn btn-light btn-sm" onclick="location.reload()">🔄 Cập nhật</button>
+            <a class="navbar-brand fw-bold" href="#">🏗️ CƠ GIỚI VIỆT NAM</a>
+            <button class="btn btn-outline-light btn-sm" onclick="localStorage.clear();location.href='/login.html'">Đăng xuất</button>
         </div>
     </nav>
 
     <div class="container">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white py-3">
-                <h5 class="m-0 fw-bold text-primary">📋 Nhật ký công việc</h5>
+        <ul class="nav nav-pills mb-3" id="pills-tab">
+            <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#rp">📋 Báo cáo</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#hr">👥 Nhân sự</button></li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="rp">
+                <div class="card shadow-sm"><div class="card-body p-0"><table class="table table-striped m-0"><tbody id="report-table"></tbody></table></div></div>
             </div>
-            <div class="card-body p-0">
-                <table class="table table-striped table-hover m-0 align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Thời gian</th>
-                            <th>Thợ thực hiện</th>
-                            <th>Vị trí (GPS)</th>
-                            <th>Hình ảnh</th>
-                            <th>Ghi chú</th>
-                        </tr>
-                    </thead>
-                    <tbody id="report-table">
-                        </tbody>
-                </table>
+            <div class="tab-pane fade" id="hr">
+                <div class="card shadow-sm"><div class="card-body p-0"><table class="table table-bordered m-0"><thead class="bg-secondary text-white"><tr><th>Tên</th><th>SĐT</th><th>Trạng thái</th><th>Xử lý</th></tr></thead><tbody id="worker-table"></tbody></table></div></div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        async function loadReports() {
-            try {
-                const res = await fetch('/api/reports');
-                const reports = await res.json();
-                
-                const table = document.getElementById('report-table');
-                table.innerHTML = '';
+        const role = localStorage.getItem('user_role');
+        if(role !== 'admin') window.location.href = '/';
 
-                reports.forEach(r => {
-                    // Chuyển đổi thời gian cho dễ đọc
-                    const time = new Date(r.created_at).toLocaleString('vi-VN');
-                    
-                    // Tạo link Google Maps
-                    const mapLink = `https://www.google.com/maps/search/?api=1&query=${r.location}`;
+        async function loadData() {
+            // Load Reports
+            const resR = await fetch('/api/reports');
+            const reps = await resR.json();
+            document.getElementById('report-table').innerHTML = reps.map(r => `<tr><td>${new Date(r.created_at).toLocaleString('vi')}</td><td><b>${r.worker_name}</b></td><td><a href="${r.image_url}" target="_blank">Ảnh</a></td><td>${r.note}</td></tr>`).join('');
 
-                    const row = `
-                        <tr>
-                            <td>${time}</td>
-                            <td>
-                                <strong>${r.worker_name}</strong><br>
-                                <small class="text-muted">${r.phone}</small>
-                            </td>
-                            <td><a href="${mapLink}" target="_blank" class="btn btn-sm btn-outline-primary">📍 Xem Map</a></td>
-                            <td>
-                                <a href="${r.image_url}" target="_blank">
-                                    <img src="${r.image_url}" style="height: 60px; width: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;">
-                                </a>
-                            </td>
-                            <td>${r.note}</td>
-                        </tr>
-                    `;
-                    table.innerHTML += row;
-                });
-            } catch (err) { alert('Lỗi tải dữ liệu'); }
+            // Load Workers
+            const resW = await fetch('/api/workers');
+            const works = await resW.json();
+            document.getElementById('worker-table').innerHTML = works.map(w => {
+                let btn = w.status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="setStatus(${w.id}, 'active')">Duyệt</button>` : `<button class="btn btn-danger btn-sm" onclick="setStatus(${w.id}, 'blocked')">Khóa</button>`;
+                if(w.status === 'blocked') btn = `<button class="btn btn-secondary btn-sm" onclick="setStatus(${w.id}, 'active')">Mở</button>`;
+                return `<tr><td>${w.name}</td><td>${w.phone}</td><td>${w.status}</td><td>${btn}</td></tr>`;
+            }).join('');
         }
 
-        loadReports();
+        async function setStatus(id, st) {
+            await fetch(`/api/workers/${id}/status`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({status: st}) });
+            loadData();
+        }
+        loadData();
     </script>
 </body>
 </html>
