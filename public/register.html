@@ -3,25 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CƠ GIỚI VIỆT NAM | Tuyển Dụng</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📝</text></svg>">
+    <title>Đăng ký | CƠ GIỚI VN</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background: #f0f2f5; height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .card-custom { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        body { background-color: #fff; font-family: Arial, sans-serif; }
+        .header-simple { padding: 20px; text-align: center; color: #0068FF; font-weight: bold; font-size: 18px; border-bottom: 1px solid #eee; }
+        .form-area { padding: 30px; }
+        .form-control { background: #f4f5f7; border: none; border-radius: 8px; padding: 15px; margin-bottom: 15px; font-size: 14px; }
+        .btn-zalo { background-color: #0068FF; color: white; border-radius: 30px; padding: 12px; font-weight: bold; width: 100%; border: none; margin-top: 10px; }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: #666; text-decoration: none; font-size: 14px; }
     </style>
 </head>
 <body>
-    <div class="card-custom">
-        <h3 class="text-center fw-bold text-primary mb-2">ĐĂNG KÝ MỚI</h3>
-        <p class="text-center text-muted mb-4">Gia nhập đội ngũ Cơ Giới VN</p>
+    <div class="header-simple">TẠO TÀI KHOẢN MỚI</div>
+
+    <div class="form-area">
+        <p class="text-muted small mb-4 text-center">Vui lòng điền thông tin chính xác để Admin phê duyệt.</p>
         
-        <input type="text" id="name" class="form-control mb-3" placeholder="Họ và tên đầy đủ">
-        <input type="text" id="phone" class="form-control mb-3" placeholder="Số điện thoại">
-        <input type="password" id="password" class="form-control mb-3" placeholder="Mật khẩu tự tạo">
+        <input type="text" id="name" class="form-control" placeholder="Họ và tên đầy đủ (VD: Nguyễn Văn A)">
+        <input type="text" id="phone" class="form-control" placeholder="Số điện thoại">
+        <input type="password" id="password" class="form-control" placeholder="Mật khẩu">
         
-        <button onclick="register()" class="btn btn-primary w-100 fw-bold">GỬI ĐƠN ĐĂNG KÝ</button>
-        <div class="text-center mt-3"><a href="/login.html" class="text-decoration-none">Quay lại Đăng nhập</a></div>
+        <button onclick="register()" class="btn btn-zalo">ĐĂNG KÝ NGAY</button>
+        <a href="/login.html" class="back-link">← Quay lại đăng nhập</a>
     </div>
 
     <script>
@@ -29,7 +33,7 @@
             const name = document.getElementById('name').value;
             const phone = document.getElementById('phone').value;
             const password = document.getElementById('password').value;
-            if(!name || !phone || !password) return alert("Điền đủ thông tin đi bạn ơi!");
+            if(!name || !phone || !password) return alert("Vui lòng điền đủ thông tin!");
 
             try {
                 const res = await fetch('/api/register', {
