@@ -2,361 +2,91 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CƠ GIỚI VN</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏗️</text></svg>">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <style>
-        /* --- BIẾN MÀU ZALO --- */
-        :root {
-            --zalo-blue: #0068FF;
-            --zalo-bg: #F4F5F7;
-            --zalo-hover: #F1F1F1;
-            --text-main: #000;
-            --text-sub: #767676;
-        }
-        body { background-color: var(--zalo-bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; }
-
-        /* ============================
-           1. GIAO DIỆN PC (Sidebar)
-           ============================ */
-        .sidebar-pc {
-            width: 64px; background: var(--zalo-blue); position: fixed; top: 0; left: 0; height: 100vh;
-            display: flex; flex-direction: column; align-items: center; padding-top: 24px; z-index: 2000;
-        }
-        .sidebar-icon {
-            font-size: 24px; color: rgba(255,255,255,0.7); margin-bottom: 28px; cursor: pointer;
-            transition: all 0.2s; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px;
-        }
-        .sidebar-icon:hover { background: rgba(255,255,255,0.1); color: white; }
-        .sidebar-icon.active { background: rgba(0,0,0,0.15); color: white; }
-
-        /* Vùng nội dung chính trên PC */
-        .main-container {
-            margin-left: 64px; /* Chừa chỗ cho Sidebar */
-            padding: 20px;
-            max-width: 800px; /* Giới hạn chiều rộng để Feed không bị bè ra */
-            margin-right: auto; /* Căn giữa nội dung nếu màn hình quá to */
-        }
-
-        /* Ẩn Header/Nav của Mobile đi khi ở trên PC */
-        .mobile-header, .mobile-bottom-nav { display: none !important; }
-
-        /* ============================
-           2. GIAO DIỆN MOBILE (< 768px)
-           ============================ */
-        @media (max-width: 768px) {
-            /* Ẩn Sidebar PC */
-            .sidebar-pc { display: none !important; }
-            
-            /* Reset lề cho nội dung */
-            .main-container { margin-left: 0; padding: 0; max-width: 100%; padding-top: 48px; padding-bottom: 60px; }
-
-            /* Hiện Header Mobile */
-            .mobile-header {
-                display: flex !important; background: var(--zalo-blue); height: 48px; padding: 0 16px;
-                position: fixed; top: 0; width: 100%; z-index: 1000; align-items: center; justify-content: space-between;
-            }
-            .search-input-wrapper { background: rgba(255,255,255,0.25); border-radius: 8px; height: 32px; display: flex; align-items: center; padding: 0 10px; flex: 1; margin-right: 15px; }
-            .search-input-wrapper input { background: transparent; border: none; color: white; font-size: 14px; width: 100%; outline: none; }
-            .search-input-wrapper input::placeholder { color: rgba(255,255,255,0.7); }
-
-            /* Hiện Nav Bottom Mobile */
-            .mobile-bottom-nav {
-                display: flex !important; background: white; border-top: 1px solid #E0E0E0;
-                height: 52px; position: fixed; bottom: 0; width: 100%; justify-content: space-around; align-items: center; z-index: 1000;
-            }
-            .nav-item { text-align: center; color: var(--text-sub); font-size: 10px; width: 25%; cursor: pointer; }
-            .nav-item.active { color: var(--zalo-blue); }
-            .nav-icon { font-size: 22px; display: block; margin-bottom: -2px; }
-        }
-
-        /* ============================
-           3. CÁC COMPONENT CHUNG
-           ============================ */
-        
-        /* CARD FEED & LIST */
-        .feed-card { background: white; margin-bottom: 10px; padding: 15px; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .hidden { display: none !important; }
-
-        /* PROFILE STYLE (Zalo Chuẩn) */
-        .profile-header-card { background: white; padding: 15px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; }
-        .profile-header-card:hover { background-color: var(--zalo-hover); }
-        .avatar-circle { width: 50px; height: 50px; border-radius: 50%; background: #E1E4EA; color: #9FA7AB; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-right: 15px; border: 1px solid #eee; }
-        
-        .zalo-menu-group { background: white; margin-top: 8px; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
-        .zalo-menu-item { display: flex; align-items: center; padding: 14px 16px; cursor: pointer; transition: background 0.1s; position: relative; }
-        .zalo-menu-item:hover { background-color: var(--zalo-hover); }
-        .zalo-menu-item:active { background-color: #E8E8E8; }
-        .zalo-menu-item:not(:last-child)::after { content: ''; position: absolute; bottom: 0; left: 56px; right: 0; height: 1px; background: #F4F5F7; }
-        
-        .menu-icon { width: 24px; font-size: 20px; margin-right: 16px; text-align: center; }
-        .menu-text { font-size: 15px; color: var(--text-main); flex: 1; }
-        .menu-sub { font-size: 13px; color: var(--text-sub); margin-right: 10px; }
-        .menu-arrow { font-size: 14px; color: #BDBDBD; }
-
-        /* POST MODAL (Zalo Style) */
-        .zalo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 3000; flex-direction: column; }
-        .zalo-modal-header { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 1px solid #f0f0f0; }
-        .btn-post { color: #87C6FF; font-weight: 600; font-size: 16px; background: none; border: none; }
-        .btn-post.active { color: var(--zalo-blue); cursor: pointer; }
-        
-        .post-input-area { width: 100%; border: none; outline: none; font-size: 17px; resize: none; min-height: 150px; padding: 15px; }
-        .post-tools { position: absolute; bottom: 0; width: 100%; border-top: 1px solid #f0f0f0; padding: 10px; display: flex; gap: 20px; font-size: 24px; color: var(--text-sub); }
-        
-        /* Camera Button */
-        .camera-trigger { width: 70px; height: 70px; border: 3px solid var(--zalo-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; color: var(--zalo-blue); margin: 20px auto; cursor: pointer; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zalo Social</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
-    <div class="mobile-header">
-        <i class="bi bi-search text-white fs-5"></i>
-        <div class="search-input-wrapper">
-            <input type="text" placeholder="Tìm kiếm...">
+    <div id="auth-screen" class="login-container">
+        <div id="form-login" class="login-box">
+            <h2 class="logo-text">Zalo Social</h2>
+            <input type="text" id="loginPhone" placeholder="Số điện thoại" value="0901111111">
+            <input type="password" id="loginPass" placeholder="Mật khẩu" value="123456">
+            <button onclick="handleLogin()">Đăng nhập</button>
+            <p style="margin-top:10px; font-size:13px; color:#666">Chưa có nick? <a onclick="switchForm('register')" style="color:blue; cursor:pointer">Đăng ký</a></p>
         </div>
-        <i class="bi bi-qr-code-scan text-white fs-5"></i>
+        <div id="form-register" class="login-box hidden">
+            <h2 class="logo-text">Đăng ký</h2>
+            <input type="text" id="regName" placeholder="Tên hiển thị">
+            <input type="text" id="regPhone" placeholder="Số điện thoại">
+            <input type="password" id="regPass" placeholder="Mật khẩu">
+            <button onclick="handleRegister()">Tạo tài khoản</button>
+            <button class="btn-outline" onclick="switchForm('login')">Quay lại</button>
+        </div>
     </div>
 
-    <div class="sidebar-pc">
-        <div style="font-size: 28px; margin-bottom: 30px; color: white;">🏗️</div>
+    <div id="main-app" class="app-container hidden">
         
-        <div class="sidebar-icon" onclick="switchTab('chat', this)" title="Tin nhắn"><i class="bi bi-chat-dots-fill"></i></div>
-        <div class="sidebar-icon active" onclick="switchTab('home', this)" title="Tường nhà"><i class="bi bi-newspaper"></i></div>
-        <div class="sidebar-icon" onclick="switchTab('report', this)" title="Báo cáo"><i class="bi bi-camera-fill"></i></div>
-        <div class="sidebar-icon" onclick="switchTab('profile', this)" title="Cá nhân"><i class="bi bi-person-fill"></i></div>
-        
-        <div class="sidebar-icon mt-auto mb-4" onclick="logout()" title="Đăng xuất"><i class="bi bi-gear-fill"></i></div>
-    </div>
-
-    <div class="main-container">
-        
-        <div id="view-chat" class="hidden">
-            <div class="bg-white p-3 border-bottom mb-2 fw-bold text-muted small">TIN NHẮN</div>
-            <div id="contact-list" class="bg-white"></div>
-        </div>
-
-        <div id="view-home">
-            <div class="feed-card d-flex align-items-center mb-2" onclick="openCreatePostModal()" style="cursor: pointer;">
-                <div class="avatar-circle" style="width:36px;height:36px;font-size:16px;margin-right:10px;background:var(--zalo-blue);color:white;border:none;" id="feed-avatar-text">A</div>
-                <div class="text-secondary flex-grow-1">Bạn đang nghĩ gì?</div>
-                <i class="bi bi-images text-success fs-4"></i>
-            </div>
-            <div id="feed-container"></div>
-        </div>
-
-        <div id="view-report" class="hidden text-center">
-            <div class="feed-card" style="min-height: 80vh; display:flex; flex-direction:column; justify-content:center;">
-                <h5 class="fw-bold text-primary mb-3">BÁO CÁO CÔNG VIỆC</h5>
-                <div id="gps-status" class="badge bg-warning text-dark mb-3">📡 Đang định vị...</div>
-                
-                <div class="camera-trigger" onclick="document.getElementById('cameraInput').click()"><i class="bi bi-camera-fill"></i></div>
-                <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="uploadPhoto()" hidden>
-                
-                <div id="preview-area" class="hidden mt-3">
-                    <img id="preview-img" src="" style="width: 100%; border-radius: 8px; border: 1px solid #ddd;">
-                    <div class="text-success fw-bold small mt-2">✅ Ảnh đã sẵn sàng</div>
+        <nav class="main-nav">
+            <div class="nav-top">
+                <div class="nav-avatar"><img src="" id="nav-user-avatar"></div>
+                <div class="nav-item active" id="tab-chat-btn" onclick="switchTab('chat')">
+                    <i class="fas fa-comment-dots"></i>
                 </div>
+                <div class="nav-item" id="tab-feed-btn" onclick="switchTab('feed')">
+                    <i class="far fa-newspaper"></i>
+                </div>
+            </div>
+            <div class="nav-bottom">
+                <div class="nav-item" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i></div>
+            </div>
+        </nav>
 
-                <textarea id="note" class="form-control bg-light mt-3" rows="3" placeholder="Ghi chú công việc..."></textarea>
-                <button onclick="submitReport()" class="btn btn-primary w-100 fw-bold mt-3 rounded-pill">GỬI BÁO CÁO</button>
+        <div id="view-chat" class="view-container">
+            <div class="sidebar" id="sidebar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Tìm người dùng...">
+                </div>
+                <div style="padding:10px; font-size:12px; color:#666; background:#f9f9f9; border-bottom:1px solid #eee">
+                    DANH SÁCH LIÊN HỆ
+                </div>
+                <div id="conversation-list" class="list-content"></div>
+            </div>
+            <div class="chat-area" id="chat-area">
+                <div class="header-bar chat-header">
+                    <button class="icon-btn back-btn" onclick="closeChatMobile()"><i class="fas fa-arrow-left"></i></button>
+                    <div class="chat-info"><h3 id="chat-title">Chào mừng</h3><span id="chat-status">Chọn một người để chat</span></div>
+                </div>
+                <div id="message-list" class="message-list"></div>
+                <div id="input-area" class="input-area hidden">
+                    <input type="text" id="messageInput" placeholder="Nhập tin nhắn...">
+                    <button onclick="sendMessage()" class="send-btn">GỬI</button>
+                </div>
             </div>
         </div>
 
-        <div id="view-profile" class="hidden">
-            <div class="profile-header-card" onclick="alert('Tính năng đang phát triển')">
-                <div class="avatar-circle"><i class="bi bi-person-fill"></i></div>
-                <div class="flex-grow-1">
-                    <h5 id="profile-name">...</h5>
-                    <p>Xem trang cá nhân</p>
+        <div id="view-feed" class="view-container hidden" style="flex-direction: column; align-items: center; background: #eef4fc; width: 100%;">
+            <div class="feed-container">
+                <div class="feed-header">
+                    <h2>Bảng Tin Công Ty</h2>
+                    <button id="btn-create-post" class="btn-post hidden" onclick="togglePostForm()">
+                        <i class="fas fa-pen"></i> Đăng bài
+                    </button>
                 </div>
-                <i class="bi bi-arrow-clockwise refresh-icon" onclick="event.stopPropagation(); location.reload()"></i>
-            </div>
-
-            <div class="zalo-menu-group">
-                <div class="zalo-menu-item">
-                    <i class="bi bi-wallet2 menu-icon text-primary"></i>
-                    <div class="menu-text">Ví QR</div>
-                    <i class="bi bi-chevron-right menu-arrow"></i>
+                <div id="post-form" class="post-box hidden">
+                    <textarea id="postContent" placeholder="Thông báo mới là gì..."></textarea>
+                    <input type="text" id="postImage" placeholder="Link ảnh (nếu có)">
+                    <button onclick="handlePostNews()">Đăng lên</button>
                 </div>
-                <div class="zalo-menu-item">
-                    <i class="bi bi-cloud menu-icon text-info"></i>
-                    <div class="menu-text">Cloud của tôi</div>
-                    <div class="menu-sub">230 MB / 1 GB</div>
-                    <i class="bi bi-chevron-right menu-arrow"></i>
-                </div>
-            </div>
-
-            <div class="zalo-menu-group">
-                <div class="zalo-menu-item">
-                    <i class="bi bi-shield-check menu-icon text-success"></i>
-                    <div class="menu-text">Tài khoản và bảo mật</div>
-                    <i class="bi bi-chevron-right menu-arrow"></i>
-                </div>
-                <div class="zalo-menu-item">
-                    <i class="bi bi-gear menu-icon text-secondary"></i>
-                    <div class="menu-text">Quyền riêng tư</div>
-                    <i class="bi bi-chevron-right menu-arrow"></i>
-                </div>
-            </div>
-
-            <div class="zalo-menu-group">
-                <div class="zalo-menu-item" onclick="toggleLang()">
-                    <i class="bi bi-translate menu-icon text-warning"></i>
-                    <div class="menu-text">Ngôn ngữ</div>
-                    <div class="menu-sub" id="current-lang">Tiếng Việt</div>
-                    <i class="bi bi-chevron-right menu-arrow"></i>
-                </div>
-                <div class="zalo-menu-item" onclick="logout()">
-                    <i class="bi bi-box-arrow-right menu-icon text-danger"></i>
-                    <div class="menu-text text-danger fw-bold">Đăng xuất</div>
-                </div>
+                <div id="feed-list"></div>
             </div>
         </div>
 
     </div>
-
-    <div class="mobile-bottom-nav">
-        <div class="nav-item" onclick="switchTab('chat', this)">
-            <i class="bi bi-chat-dots-fill nav-icon"></i> Tin nhắn
-        </div>
-        <div class="nav-item active" onclick="switchTab('home', this)">
-            <i class="bi bi-newspaper nav-icon"></i> Tường nhà
-        </div>
-        <div class="nav-item" onclick="switchTab('report', this)">
-            <i class="bi bi-camera-fill nav-icon"></i> Báo cáo
-        </div>
-        <div class="nav-item" onclick="switchTab('profile', this)">
-            <i class="bi bi-person-fill nav-icon"></i> Cá nhân
-        </div>
-    </div>
-
-    <div class="zalo-modal" id="createPostModal">
-        <div class="zalo-modal-header">
-            <i class="bi bi-x-lg" style="font-size:24px; cursor:pointer;" onclick="closeModal()"></i>
-            <div class="fw-bold fs-5">Tạo bài viết</div>
-            <button class="btn-post" id="postBtn" disabled onclick="submitReport()">ĐĂNG</button>
-        </div>
-        <div class="p-3">
-            <div class="d-flex align-items-center mb-3">
-                <div class="avatar-circle" style="width:40px;height:40px;margin-right:10px;font-size:20px;"><i class="bi bi-person-fill"></i></div>
-                <div>
-                    <div class="fw-bold" id="modal-name">...</div>
-                    <div style="border:1px solid #ddd; border-radius:4px; padding:2px 6px; font-size:11px; display:inline-block; margin-top:2px;">Công khai ▼</div>
-                </div>
-            </div>
-            <textarea class="post-input-area" id="post-content" placeholder="Bạn đang nghĩ gì?" oninput="checkInput()"></textarea>
-        </div>
-        <div class="post-tools">
-            <i class="bi bi-images text-success" onclick="document.getElementById('cameraInput').click()"></i>
-            <i class="bi bi-person-plus-fill"></i>
-            <i class="bi bi-geo-alt-fill text-danger"></i>
-            <i class="bi bi-emoji-smile text-warning"></i>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const token = localStorage.getItem('token');
-        if(!token) window.location.href = '/login.html';
-        const myName = localStorage.getItem('user_name');
-        
-        // Điền tên vào các vị trí
-        document.getElementById('profile-name').innerText = myName;
-        document.getElementById('modal-name').innerText = myName;
-        document.getElementById('feed-avatar-text').innerText = myName.charAt(0);
-
-        function logout() { if(confirm("Đăng xuất?")) { localStorage.clear(); window.location.href='/login.html'; } }
-        function toggleLang() { const el = document.getElementById('current-lang'); el.innerText = el.innerText==='Tiếng Việt'?'English':'Tiếng Việt'; }
-
-        function switchTab(id, el) {
-            document.querySelectorAll('#view-chat, #view-home, #view-report, #view-profile').forEach(e => e.classList.add('hidden'));
-            document.getElementById('view-'+id).classList.remove('hidden');
-            
-            // Xử lý active cho cả 2 loại menu
-            document.querySelectorAll('.nav-item, .sidebar-icon').forEach(i => i.classList.remove('active'));
-            if(el) el.classList.add('active');
-            else {
-                // Mapping index để active tự động
-                const idx = {'chat':0, 'home':1, 'report':2, 'profile':3}[id];
-                if(document.querySelectorAll('.sidebar-icon')[idx]) document.querySelectorAll('.sidebar-icon')[idx].classList.add('active');
-                if(document.querySelectorAll('.nav-item')[idx]) document.querySelectorAll('.nav-item')[idx].classList.add('active');
-            }
-        }
-
-        // --- MODAL LOGIC ---
-        function openCreatePostModal() { 
-            document.getElementById('createPostModal').style.display = 'flex'; 
-            // Tự động lấy GPS
-            if(navigator.geolocation) navigator.geolocation.getCurrentPosition(p=>{ gps=`${p.coords.latitude},${p.coords.longitude}`; });
-        }
-        function closeModal() { document.getElementById('createPostModal').style.display = 'none'; }
-        function checkInput() {
-            const val = document.getElementById('post-content').value;
-            const btn = document.getElementById('postBtn');
-            if(val.length > 0) btn.classList.add('active'), btn.disabled=false;
-            else btn.classList.remove('active'), btn.disabled=true;
-        }
-
-        // --- DATA ---
-        let imgUrl = "", gps = "";
-        async function loadFeed() {
-            const feed = document.getElementById('feed-container'); feed.innerHTML = '';
-            try {
-                const resN = await fetch('/api/news'); const news = await resN.json();
-                news.forEach(n => feed.innerHTML += `<div class="feed-card"><div class="fw-bold text-primary mb-1">📢 ${n.title}</div><div>${n.content}</div></div>`);
-                
-                const uid = JSON.parse(atob(token.split('.')[1])).id;
-                const resJ = await fetch(`/api/jobs?worker_id=${uid}`); const jobs = await resJ.json();
-                jobs.forEach(j => {
-                    const btn = j.applied > 0 ? `<span class="badge bg-secondary">Đã ứng tuyển</span>` : `<button onclick="applyJob(${j.id})" class="btn btn-sm btn-outline-primary rounded-pill px-3">Ứng tuyển</button>`;
-                    feed.innerHTML += `<div class="feed-card" style="border-left:4px solid var(--zalo-blue)"><div class="d-flex justify-content-between"><div><b>💼 ${j.title}</b><div class="small text-muted">${j.location} • ${j.salary}</div></div>${btn}</div></div>`;
-                });
-            } catch(e){}
-        }
-
-        async function loadContacts() {
-            const res = await fetch('/api/workers'); const users = await res.json();
-            document.getElementById('contact-list').innerHTML = users.map(u => `
-                <div class="profile-header-card" style="border-bottom:1px solid #eee">
-                    <div class="avatar-circle" style="background:var(--zalo-blue);color:white;font-weight:bold;font-size:20px;width:45px;height:45px;margin-right:12px;">${u.name.charAt(0)}</div>
-                    <div class="flex-grow-1"><div class="fw-bold" style="font-size:15px">${u.name}</div><div class="small text-muted">Truy cập 1 phút trước</div></div>
-                    <i class="bi bi-telephone text-muted fs-5 me-3"></i><i class="bi bi-camera-video text-muted fs-5"></i>
-                </div>`).join('');
-        }
-
-        // UPLOAD & SUBMIT (Dùng chung cho cả Báo cáo và Modal mới)
-        async function uploadPhoto() {
-            const f = document.getElementById('cameraInput').files[0]; if(!f) return;
-            // Xử lý preview
-            document.getElementById('preview-img').src = URL.createObjectURL(f);
-            document.getElementById('preview-area').classList.remove('hidden');
-            
-            const fd = new FormData(); fd.append('photo', f);
-            const res = await fetch('/api/upload', {method:'POST',body:fd});
-            const d = await res.json();
-            if(d.url) { imgUrl = d.url; checkInput(); } // Enable nút đăng ở modal
-        }
-
-        async function submitReport() {
-            // Lấy nội dung từ Modal hoặc Tab Báo cáo
-            const note = document.getElementById('note').value || document.getElementById('post-content').value;
-            const uid = JSON.parse(atob(token.split('.')[1])).id;
-            
-            if(!note && !imgUrl) return alert("Viết gì đó hoặc đăng ảnh đi bạn ơi!");
-            
-            document.getElementById('postBtn').innerText = "ĐANG GỬI...";
-            const res = await fetch('/api/reports', {
-                method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-                body:JSON.stringify({worker_id:uid, location:gps, image_url:imgUrl, note:note})
-            });
-            if(res.ok) { alert("Đăng bài thành công!"); window.location.reload(); }
-        }
-
-        async function applyJob(jid) { if(confirm('Ứng tuyển?')) { const uid=JSON.parse(atob(token.split('.')[1])).id; await fetch('/api/apply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({worker_id:uid,job_id:jid})}); loadFeed(); } }
-
-        loadFeed(); loadContacts();
-    </script>
+    <script src="client.js"></script>
 </body>
 </html>

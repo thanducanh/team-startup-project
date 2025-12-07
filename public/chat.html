@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Chat Zalo</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; height: 100vh; margin: 0; }
+        .chat-container { width: 400px; background: white; border: 1px solid #ddd; display: flex; flex-direction: column; }
+        .header { background: #0068ff; color: white; padding: 15px; font-weight: bold; }
+        #messages { flex: 1; padding: 10px; overflow-y: auto; list-style: none; margin: 0; }
+        #messages li { margin-bottom: 10px; padding: 8px 12px; border-radius: 15px; max-width: 70%; word-wrap: break-word; }
+        .my-msg { background: #e5efff; color: #0068ff; margin-left: auto; text-align: right; }
+        .friend-msg { background: #eee; color: #333; margin-right: auto; }
+        .input-area { display: flex; padding: 10px; border-top: 1px solid #ddd; }
+        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+        button { margin-left: 10px; padding: 10px 20px; background: #0068ff; color: white; border: none; border-radius: 20px; cursor: pointer; }
+        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; }
+        .login-box { background: white; padding: 20px; border-radius: 8px; width: 300px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-box">
+            <h3>Chọn vai để test:</h3>
+            <button onclick="loginAs(1)" style="width:100%; margin-bottom:10px;">Đóng vai ADMIN (ID=1)</button>
+            <button onclick="loginAs(2)" style="width:100%; background:#ccc; color:#333">Đóng vai THỢ (ID=2)</button>
+            <p style="font-size:12px; color:red">*Yêu cầu trong Database phải có user id=1 và id=2</p>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="header" id="headerTitle">Chat với người lạ</div>
+        <ul id="messages"></ul>
+        <div class="input-area">
+            <input id="inputMessage" type="text" placeholder="Nhập tin nhắn..." autocomplete="off" />
+            <button onclick="sendMessage()">Gửi</button>
+        </div>
+    </div>
+
+    <script>
+        // KẾT NỐI VỚI SERVER
+        const socket = io(); 
+
+        let myId = null;
+        let conversationId = 1; // Mặc định chat ở phòng số 1 để test
+
+        // Hàm giả lập đăng nhập
+        function loginAs(id) {
+            myId = id;
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('headerTitle').innerText = `Đang chat dưới quyền ID: ${id}`;
+            
+            // Tham gia vào phòng chat số 1
+            socket.emit('join_room', conversationId);
+            
+            // Gọi API lấy tin nhắn cũ (nếu có)
+            fetch(`/api/messages/${conversationId}`)
+                .then(res => res.json())
+                .then(msgs => {
+                    msgs.forEach(msg => displayMessage(msg));
+                });
+        }
+
+        // Nhận tin nhắn từ Server (Real-time)
+        socket.on('receive_message', (msg) => {
+            console.log("Có tin nhắn mới:", msg);
+            displayMessage(msg);
+        });
+
+        // Hàm hiển thị tin nhắn lên màn hình
+        function displayMessage(msg) {
+            const ul = document.getElementById('messages');
+            const li = document.createElement('li');
+            li.textContent = msg.content;
+            
+            // Kiểm tra xem tin nhắn của mình hay của bạn
+            if (msg.sender_id == myId) {
+                li.classList.add('my-msg');
+            } else {
+                li.classList.add('friend-msg');
+            }
+            
+            ul.appendChild(li);
+            ul.scrollTop = ul.scrollHeight; // Tự cuộn xuống dưới cùng
+        }
+
+        // Hàm gửi tin nhắn
+        function sendMessage() {
+            const input = document.getElementById('inputMessage');
+            const content = input.value;
+            if (!content) return;
+
+            // Gửi sự kiện lên Server
+            socket.emit('send_message', {
+                conversation_id: conversationId,
+                sender_id: myId,
+                content: content
+            });
+
+            input.value = ''; // Xóa ô nhập
+        }
+
+        // Bắt sự kiện ấn Enter để gửi
+        document.getElementById('inputMessage').addEventListener("keypress", function(event) {
+            if (event.key === "Enter") sendMessage();
+        });
+    </script>
+</body>
+</html>
