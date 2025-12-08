@@ -1,0 +1,220 @@
+/* src/TaskModal.css */
+
+/* 1. Màn hình nền đen mờ */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Đen mờ chuẩn Base */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Đảm bảo nằm trên cùng */
+  backdrop-filter: blur(2px); /* Hiệu ứng mờ nền phía sau */
+}
+
+/* 2. Hộp Modal chính */
+.modal-content {
+  background: white;
+  width: 900px;
+  max-width: 95%;
+  height: 90vh; /* Cao 90% màn hình */
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+  overflow: hidden;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 3. Header */
+.modal-header {
+  padding: 15px 25px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+}
+
+.task-meta-id {
+  color: #666; font-weight: bold; font-size: 13px;
+  background: #f0f0f0; padding: 4px 8px; border-radius: 4px;
+}
+
+.btn-close {
+  border: none; background: none; 
+  font-size: 20px; color: #999; cursor: pointer;
+  padding: 5px; border-radius: 50%;
+  transition: 0.2s;
+}
+.btn-close:hover { background-color: #ffebee; color: #d32f2f; }
+
+/* 4. Body chia cột */
+.modal-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden; /* Để scroll bên trong từng cột */
+  background-color: #f4f6f8; /* Màu nền xám nhạt của Base */
+}
+
+/* --- CỘT TRÁI --- */
+.modal-left {
+  flex: 6.5; /* Chiếm 65% */
+  padding: 25px;
+  overflow-y: auto;
+  background: white;
+  margin: 15px 0 15px 15px; /* Cách lề một chút */
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.task-title-edit {
+  font-size: 22px; margin-bottom: 25px; color: #333;
+  border: 1px dashed transparent; padding: 5px; cursor: text;
+}
+.task-title-edit:focus { border-color: #ccc; outline: none; background: #fff; }
+
+.section { margin-bottom: 30px; }
+.section h3 {
+  font-size: 14px; color: #555; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px; font-weight: 600;
+}
+
+.desc-input {
+  width: 100%; padding: 12px;
+  border: 1px solid #e0e0e0; border-radius: 6px;
+  font-family: inherit; resize: vertical;
+  transition: 0.2s;
+}
+.desc-input:focus { border-color: #10b981; outline: none; }
+
+.checklist-container { display: flex; flex-direction: column; gap: 10px; }
+.checklist-item { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.btn-add-subtask {
+  margin-top: 5px; background: none; border: none;
+  color: #10b981; cursor: pointer; font-size: 13px; text-align: left; width: fit-content;
+}
+.btn-add-subtask:hover { text-decoration: underline; }
+
+.meta-section { display: flex; gap: 30px; padding: 15px; background: #f9fafb; border-radius: 6px; border: 1px solid #eee; }
+.meta-box label { display: block; font-size: 11px; color: #888; margin-bottom: 5px; text-transform: uppercase; }
+.meta-value { font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 6px; color: #333; }
+
+.btn-delete {
+  margin-top: 20px; background: white; border: 1px solid #ef4444; color: #ef4444;
+  padding: 8px 15px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 13px;
+}
+.btn-delete:hover { background: #ef4444; color: white; }
+
+/* --- CỘT PHẢI --- */
+.modal-right {
+  flex: 3.5; /* Chiếm 35% */
+  display: flex; flex-direction: column;
+  background: #f4f6f8;
+  border-left: 1px solid #e0e0e0;
+}
+
+.discussion-header {
+  padding: 15px 20px; font-weight: bold; color: #444; font-size: 14px;
+  border-bottom: 1px solid #e0e0e0; background: #f4f6f8;
+}
+
+.discussion-list {
+  flex: 1; overflow-y: auto; padding: 15px;
+  display: flex; flex-direction: column; gap: 15px;
+}
+
+.discussion-item { display: flex; gap: 12px; }
+.avatar-small { font-size: 28px; color: #9ca3af; flex-shrink: 0; }
+.avatar-circle { width: 28px; height: 28px; background: #3b82f6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
+
+.msg-content { background: white; padding: 10px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); flex: 1; }
+.msg-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.msg-top strong { font-size: 13px; color: #333; }
+.msg-top .time { font-size: 11px; color: #999; }
+.msg-content p { font-size: 13px; color: #4b5563; line-height: 1.4; margin: 0; }
+
+.discussion-input-area {
+  padding: 15px; background: white; border-top: 1px solid #e0e0e0;
+  display: flex; gap: 10px;
+}
+.discussion-input-area input {
+  flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;
+}
+.discussion-input-area input:focus { border-color: #10b981; outline: none; }
+.discussion-input-area button {
+  background: #10b981; color: white; border: none; padding: 0 15px; border-radius: 4px; font-weight: 600; cursor: pointer;
+}
+
+/* --- MOBILE RESPONSIVE --- */
+@media (max-width: 768px) {
+  .modal-content { width: 100%; height: 100%; border-radius: 0; }
+  .modal-body { flex-direction: column; }
+  .modal-left { margin: 0; border-radius: 0; flex: none; height: auto; max-height: 60%; box-shadow: none; border-bottom: 1px solid #ddd; }
+  .modal-right { flex: 1; border-left: none; }
+}
+/* Style cho nút Lưu mô tả */
+.btn-save-desc {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.btn-save-desc:hover {
+  background-color: #2563eb;
+}
+
+/* Style cho ô sửa tiêu đề */
+.title-input-edit {
+  font-size: 22px;
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #3b82f6;
+  border-radius: 4px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25px;
+}
+/* --- BỔ SUNG: ÉP MÀU SÁNG CHO Ô NHẬP LIỆU --- */
+
+/* 1. Ô nhập tiêu đề, mô tả, bình luận */
+input, textarea {
+  background-color: #ffffff !important; /* Nền trắng tuyệt đối */
+  color: #172b4d !important; /* Chữ màu đen than (chuẩn Base) */
+  border: 1px solid #dfe1e6 !important; /* Viền xám nhạt */
+  box-shadow: none !important;
+}
+
+/* 2. Khi bấm vào (Focus) thì viền xanh, nền vẫn trắng */
+input:focus, textarea:focus {
+  background-color: #ffffff !important;
+  border-color: #3b82f6 !important; /* Viền xanh Base */
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* 3. Chỉnh lại ô tiêu đề to cho đẹp hơn */
+.title-input-edit {
+  background-color: transparent !important; /* Riêng tiêu đề để nền trong suốt cho đẹp */
+  border: 1px solid transparent !important;
+  font-size: 20px;
+  font-weight: 600;
+  color: #172b4d !important;
+}
+
+.title-input-edit:focus {
+  background-color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}

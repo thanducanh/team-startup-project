@@ -1,0 +1,111 @@
+/* src/Kanban.css */
+.kanban-container {
+  padding: 20px;
+  height: 100vh;
+  background-color: white;
+  overflow-x: auto; /* Cho phép cuộn ngang nếu nhiều cột */
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+}
+
+.board-header h2 {
+  font-size: 20px;
+  color: #333;
+}
+
+.btn-add-member {
+  background: #e2e8f0;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #475569;
+}
+
+/* Layout các cột */
+.kanban-columns {
+  display: flex;
+  gap: 20px; /* Khoảng cách giữa các cột */
+  align-items: flex-start;
+}
+
+.kanban-column {
+  background-color: #f4f5f7; /* Màu xám nhạt nền cột giống Trello/Base */
+  width: 300px;
+  min-width: 300px;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 5px;
+  font-weight: 600;
+  color: #172b4d;
+  background: white;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.task-count {
+  background: #ddd;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+/* Thẻ công việc (Card) */
+.task-card {
+  background: white;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 2px rgba(9, 30, 66, 0.25);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.task-card:hover {
+  background-color: #fafbfc;
+}
+
+.task-title {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.task-tag {
+  display: inline-block;
+  background-color: #e6fcff;
+  color: #00768e;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.add-task-btn {
+  padding: 8px;
+  color: #5e6c84;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.add-task-btn:hover {
+  background-color: #ddd;
+}

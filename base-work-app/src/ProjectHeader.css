@@ -1,0 +1,64 @@
+/* src/ProjectHeader.css */
+.project-header-container {
+  background: white; border-bottom: 1px solid #e0e0e0;
+  padding: 0 25px;
+}
+
+/* Dòng trên: Tên + Tabs */
+.ph-top {
+  height: 60px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid #f0f0f0;
+}
+.ph-title { display: flex; align-items: center; gap: 10px; }
+.ph-title h2 { font-size: 18px; color: #172b4d; margin: 0; }
+.ph-status {
+  background: #dcfce7; color: #166534; font-size: 11px; padding: 2px 8px;
+  border-radius: 10px; font-weight: 600; text-transform: uppercase;
+}
+
+.ph-tabs { display: flex; height: 100%; }
+.ph-tab {
+  display: flex; align-items: center; gap: 8px; padding: 0 20px;
+  font-size: 14px; color: #5e6c84; cursor: pointer; border-bottom: 2px solid transparent;
+  height: 100%; transition: 0.2s;
+}
+.ph-tab:hover { background-color: #f4f5f7; color: #172b4d; }
+.ph-tab.active { color: #0052cc; border-bottom-color: #0052cc; font-weight: 500; }
+
+/* Dòng dưới: Toolbar */
+.ph-toolbar {
+  height: 50px; display: flex; align-items: center; justify-content: space-between;
+}
+.ph-filters { display: flex; align-items: center; gap: 10px; }
+.ph-filter-btn {
+  display: flex; align-items: center; gap: 6px; padding: 6px 12px;
+  border: 1px solid #dfe1e6; border-radius: 4px; font-size: 13px; color: #42526e;
+  cursor: pointer; background: white;
+}
+.ph-filter-btn:hover { background: #f4f5f7; }
+
+.ph-member-stack { display: flex; align-items: center; margin-left: 15px; }
+.avatar-circle {
+  width: 28px; height: 28px; border-radius: 50%; color: white;
+  display: flex; align-items: center; justify-content: center; font-size: 12px;
+  border: 2px solid white; margin-left: -8px; font-weight: bold;
+}
+.add-member-circle {
+  width: 28px; height: 28px; border-radius: 50%; border: 1px dashed #ccc;
+  display: flex; align-items: center; justify-content: center; margin-left: 5px;
+  color: #666; font-size: 10px; cursor: pointer;
+}
+
+/* Nút Thêm Xanh Lá */
+.btn-base-add {
+  background-color: #10b981; /* Xanh Base */
+  color: white; border: none; padding: 8px 16px; border-radius: 4px;
+  font-weight: 600; font-size: 13px; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  box-shadow: 0 2px 5px rgba(16, 185, 129, 0.4);
+}
+.btn-base-add:hover { background-color: #059669; }
+
+.ph-more-btn {
+  padding: 8px; color: #5e6c84; cursor: pointer;
+}

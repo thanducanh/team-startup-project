@@ -1,0 +1,148 @@
+/* src/TopNav.css */
+
+/* --- 1. CẤU TRÚC CHUNG THANH TOPNAV --- */
+.top-nav {
+  height: 60px;
+  background-color: white;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 25px;
+  position: sticky;
+  top: 0;
+  z-index: 100; /* Đảm bảo nằm trên nội dung khi cuộn */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* --- 2. BÊN TRÁI (BREADCRUMB) --- */
+.nav-left {
+  display: flex; align-items: center; gap: 8px; font-size: 14px;
+}
+.app-name { font-weight: 600; color: #555; }
+.divider { color: #ccc; }
+.current-page { font-weight: bold; color: #172b4d; }
+
+/* --- 3. Ở GIỮA (SEARCH BOX) --- */
+.nav-center { flex: 1; display: flex; justify-content: center; }
+.search-box { position: relative; width: 400px; max-width: 100%; }
+.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; font-size: 14px; }
+.search-box input {
+  width: 100%; padding: 9px 15px 9px 38px;
+  border: 1px solid #e0e0e0; border-radius: 6px;
+  background-color: #f4f5f7; font-size: 14px; transition: 0.2s;
+}
+.search-box input:focus {
+  background-color: white; border-color: #3b82f6; outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* --- 4. BÊN PHẢI (ICONS) --- */
+.nav-right { display: flex; align-items: center; gap: 20px; }
+
+.nav-icon {
+  position: relative; cursor: pointer; color: #5e6c84; font-size: 18px;
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; transition: 0.2s;
+}
+.nav-icon:hover { background-color: #ebecf0; color: #172b4d; }
+
+/* Số lượng thông báo đỏ */
+.badge {
+  position: absolute; top: -2px; right: -2px;
+  background-color: #ef4444; color: white;
+  font-size: 10px; font-weight: bold;
+  min-width: 16px; height: 16px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid white;
+}
+
+/* --- 5. DROPDOWN THÔNG BÁO (PHẦN QUAN TRỌNG) --- */
+.noti-dropdown {
+  position: absolute;
+  top: 45px; right: -10px; /* Căn phải */
+  width: 350px;
+  background: white;
+  border: 1px solid #dfe1e6;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  cursor: default; /* Để chuột không bị hình bàn tay toàn bộ khung */
+  animation: slideUp 0.2s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header của dropdown */
+.noti-header {
+  padding: 12px 15px;
+  font-weight: 700; color: #172b4d; font-size: 14px;
+  border-bottom: 1px solid #eee;
+  background-color: #fafbfc;
+  border-radius: 8px 8px 0 0;
+  /* Flexbox để căn chữ "Thông báo" sang trái, nút "Đã đọc hết" sang phải */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700; color: #172b4d; font-size: 14px;
+  /* Nút Đã đọc hết */
+.mark-all-read {
+  font-size: 11px;
+  color: #3b82f6;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex; align-items: center; gap: 4px;
+}
+.mark-all-read:hover { text-decoration: underline; }
+}
+
+/* Danh sách cuộn được (Cái bạn cần thêm đây) */
+.noti-list-scroll {
+  max-height: 350px; /* Giới hạn chiều cao */
+  overflow-y: auto;  /* Tự hiện thanh cuộn nếu dài quá */
+}
+
+/* Từng dòng thông báo */
+.noti-item {
+  padding: 12px 15px;
+  border-bottom: 1px solid #f4f5f7;
+  font-size: 13px; color: #172b4d;
+  cursor: pointer; transition: 0.1s;
+  line-height: 1.5;
+}
+
+.noti-item:hover { background-color: #ebecf0; }
+
+/* Style cho tin chưa đọc (Màu xanh nhạt) */
+.noti-item.unread {
+  background-color: #e6fcff; /* Xanh nhạt đặc trưng Base */
+}
+.noti-item.unread:hover { background-color: #dff0ff; }
+
+/* Nội dung bên trong item */
+.noti-item strong { color: #0052cc; font-weight: 600; } /* Tên người màu xanh */
+.noti-item .time {
+  display: block; font-size: 11px; color: #8993a4; margin-top: 4px;
+}
+
+/* Footer Xem tất cả */
+.noti-footer {
+  padding: 12px; text-align: center;
+  font-size: 13px; font-weight: 600; color: #0052cc;
+  border-top: 1px solid #eee;
+  cursor: pointer;
+  background-color: white;
+  border-radius: 0 0 8px 8px;
+}
+.noti-footer:hover { background-color: #f4f5f7; text-decoration: underline; }
+
+/* Responsive cho Mobile */
+@media (max-width: 768px) {
+  .search-box { display: none; } /* Ẩn tìm kiếm trên mobile cho gọn */
+  .noti-dropdown {
+    position: fixed; top: 60px; left: 0; right: 0; width: 100%;
+    border-radius: 0; box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  }
+}

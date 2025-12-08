@@ -1,0 +1,29 @@
+/* src/App.css */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: #f4f5f7;
+}
+
+.main-content {
+  margin-left: 240px; /* Tránh Sidebar 240px */
+  width: calc(100% - 240px);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.board-area {
+  flex: 1;
+  overflow: auto; /* Cuộn vùng board */
+  padding: 0; /* Bỏ padding để board sát lề giống Base */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-content { margin-left: 60px; width: calc(100% - 60px); }
+}
